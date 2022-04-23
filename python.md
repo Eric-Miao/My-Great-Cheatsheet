@@ -3,12 +3,12 @@
 ## Pandas
 
 ### Get Start
-'''python
+```python
 import pandas # sometimes as pd
-'''
+```
 
 ### DataFrame.dropna()
-'''python
+```python
 df.dropna(
     axis: 'Axis' = 0,
     how: 'str' = 'any',
@@ -16,80 +16,26 @@ df.dropna(
     subset: 'IndexLabel' = None,
     inplace: 'bool' = False,
 )
-'''
 
-**Parameters**
+#Parameters
 axis : {0 or 'index', 1 or 'columns'}, default 0
-    Determine if rows or columns which contain missing values are
-    removed.
+    Determine if rows or columns which contain missing values are removed.
 how : {'any', 'all'}, default 'any'
-    Determine if row or column is removed from DataFrame, when we have
-    at least one NA or all NA.
+    Determine if row or column is removed from DataFrame, when we have at least one NA or all NA.
 thresh : int, optional
     Require that many non-NA values.
 subset : column label or sequence of labels, optional
-    Labels along other axis to consider, e.g. if you are dropping rows
-    these would be a list of columns to include.
+    Labels along other axis to consider, e.g. if you are dropping rows these would be a list of columns to include.
 inplace : bool, default False
     If True, do operation inplace and return None.
 
-**Returns**
+**Returns
 DataFrame or None
     DataFrame with NA entries dropped from it or None if *inplace=True*.
-    
-**Examples**
->>> df
-       name        toy       born
-0    Alfred        NaN        NaT
-1    Batman  Batmobile 1940-04-25
-2  Catwoman   Bullwhip        NaT
-
-Drop the rows where at least one element is missing.
-
->>> df.dropna()
-     name        toy       born
-1  Batman  Batmobile 1940-04-25
-
-Drop the columns where at least one element is missing.
-
->>> df.dropna(axis='columns')
-       name
-0    Alfred
-1    Batman
-2  Catwoman
-
-Drop the rows where all elements are missing.
-
->>> df.dropna(how='all')
-       name        toy       born
-0    Alfred        NaN        NaT
-1    Batman  Batmobile 1940-04-25
-2  Catwoman   Bullwhip        NaT
-
-Keep only the rows with at least 2 non-NA values.
-
->>> df.dropna(thresh=2)
-       name        toy       born
-1    Batman  Batmobile 1940-04-25
-2  Catwoman   Bullwhip        NaT
-
-Define in which columns to look for missing values.
-
->>> df.dropna(subset=['name', 'toy'])
-       name        toy       born
-1    Batman  Batmobile 1940-04-25
-2  Catwoman   Bullwhip        NaT
-
-Keep the DataFrame with valid entries in the same variable.
-
->>> df.dropna(inplace=True)
->>> df
-     name        toy       born
-1  Batman  Batmobile 1940-04-25
-
+```
 
 ### 画图 DataFrame.plot()/Series.plot()
-'''python
+```python
 DataFrame.plot(x=None, y=None, kind='line', ax=None, subplots=False, 
                 sharex=None, sharey=False, layout=None,figsize=None, 
                 use_index=True, title=None, grid=None, legend=True, 
@@ -205,10 +151,10 @@ kwds : keywords
 Options to pass to matplotlib plotting method
 
 Returns:axes : matplotlib.AxesSubplot or np.array of them
-'''
+```
 
 ### 滚动窗口 DataFrame.rolling()
-'''python
+```python
 df = tushare.get_hist_data('601318')
 
 #循环方法实现滑动平均
@@ -223,7 +169,7 @@ df['ma5'] = df['close'].rolling(5).mean()
 #30行移动平均 moving average
 df['ma30'] = df['close'].rolling(30).mean()
 
-'''
+```
 
 ### 
 
@@ -232,17 +178,17 @@ df['ma30'] = df['close'].rolling(30).mean()
 ## Tushare
 
 ### Get Start
-'''python
+```python
 import tushare # sometimes as te/tu/ts
-'''
+```
 #### get a stock
 
 ##### old version tushare.get_hist_data()
-'''python
+```python
 df = tushare.get_hist_data('601318')
-'''
+```
 ##### new version pro.daily(ts_code,start_date,end_date)
-'''python
+```python
 pro = ts.pro_api()
 
 #单只股票
@@ -255,4 +201,4 @@ df = pro.query('daily', ts_code='000001.SZ', start_date='20180701', end_date='20
 
 #也可以通过日期取历史某一天的全部历史
 df = pro.daily(trade_date='20180810')
-'''
+```
