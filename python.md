@@ -188,3 +188,172 @@ df = pro.query('daily', ts_code='000001.SZ', start_date='20180701', end_date='20
 #也可以通过日期取历史某一天的全部历史
 df = pro.daily(trade_date='20180810')
 ```
+
+## Type hint
+To clarify the type of input and output, in static way.
+This will be showed by the IDE when called, for easy usage
+```python
+def f(a: int, b: int) -> int:
+    return a+b
+```
+### Static analysis tool
+```shell
+# this will help analysis the code by the static type int
+pip install mypy
+
+# check by mypy
+mypy example.py
+```
+
+### self defined type in type hint
+```python
+class A:
+    name = 'A'
+
+def get_name(o: A) -> str:
+    return o.name
+
+get_name(A) #会报错，type不是A()
+get_name(A())
+```
+
+When the return type is the type itself,
+use type name as a string, to interpret later
+```python
+class Node:
+    def __init__(self,prev: "Node"):
+        self.prev = prev
+        self.next = None
+```
+
+### Recursive type usage, e.g. list
+```python
+def my_sum(lst: list) -> int:
+    total = 0
+    for i in lst:
+        total += i
+    return total
+
+my_sum([0,1,2]) #例1
+my_sum(1) #例2 会报错，type不是list
+my_sum(['0',1,2]) #例3 不会报错，因为第一层还是list
+
+# python3.9+ 这样表示list中都是int，上述例子3就会报错
+def my_sum(lst: list[int]) -> int:
+    pass
+
+# python3.9-
+from typing import List
+def my_sum(lst: List[int]) -> int:
+    pass
+
+my_sum((0,1,2)) #例4 会报错，因为tuple不是list
+
+from typing import Sequence
+def my_sum(lst: Sequence[int]) -> int:
+    pass
+
+my_sum((0,1,2)) #例4 不会报错
+my_sum(range(3)) #例5
+my_sum(b"012") #例6
+```
+
+### Dictionary type
+```python
+def my_sum(d: dict[str,int]) -> int:
+    total = 0
+    for i in d.values:
+        total += i
+    return total
+
+my_sum({"a":1,"b":2,"c":3}) 
+my_sum({"a":1,"b":2,"c":"3"}) #会报错
+```
+
+### Multiple possible types/ None type args
+```python
+from typing import Union
+def f(x: Union[int,None]) -> int:
+    if x is None:
+        return 0
+    return x
+
+f(None)
+f(0)
+
+# after python3.10
+def f(x: int | None) -> int:
+    pass
+
+# 如果只有一个类型或者None
+from typing import Optional
+def f(x: Optional[int]) -> int:
+    pass 
+
+```
+
+## Comment
+
+Refer to the link for details
+https://zh-google-styleguide.readthedocs.io/en/latest/google-python-styleguide/python_style_rules
+
+### Comments in functions 
+```python
+def fetch_smalltable_rows(table_handle: smalltable.Table,
+                        keys: Sequence[Union[bytes, str]],
+                        require_all_keys: bool = False,
+) -> Mapping[bytes, Tuple[str]]:
+    """Fetches rows from a Smalltable.
+
+    Retrieves rows pertaining to the given keys from the Table instance
+    represented by table_handle.  String keys will be UTF-8 encoded.
+
+    Args:
+    table_handle:
+        An open smalltable.Table instance.
+    keys:
+        A sequence of strings representing the key of each table row to
+        fetch.  String keys will be UTF-8 encoded.
+    require_all_keys:
+        Optional; If require_all_keys is True only rows with values set
+        for all keys will be returned.
+
+    Returns:
+    A dict mapping keys to the corresponding table row data
+    fetched. Each row is represented as a tuple of strings. For
+    example:
+
+    {b'Serak': ('Rigel VII', 'Preparer'),
+    b'Zim': ('Irk', 'Invader'),
+    b'Lrrr': ('Omicron Persei 8', 'Emperor')}
+
+    Returned keys are always bytes.  If a key from the keys argument is
+    missing from the dictionary, then that row was not found in the
+    table (and require_all_keys must have been False).
+
+    Raises:
+    IOError: An error occurred accessing the smalltable.
+    """
+```
+
+### Comments in Class
+```python
+class SampleClass(object):
+    """Summary of class here.
+
+    Longer class information....
+    Longer class information....
+
+    Attributes:
+        likes_spam: A boolean indicating if we like SPAM or not.
+        eggs: An integer count of the eggs we have laid.
+    """
+
+    def __init__(self, likes_spam=False):
+        """Inits SampleClass with blah."""
+        self.likes_spam = likes_spam
+        self.eggs = 0
+
+    def public_method(self):
+        """Performs operation blah."""
+```
